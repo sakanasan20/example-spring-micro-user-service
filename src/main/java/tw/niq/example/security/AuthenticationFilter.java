@@ -9,6 +9,8 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +32,8 @@ import tw.niq.example.model.LoginUserModel;
 import tw.niq.example.service.UserService;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+	
+	private final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 	
 	private final Environment environment;
 	
@@ -76,10 +80,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 		
 		SecretKey secretKey = new SecretKeySpec(tokenSecretBytes, SignatureAlgorithm.HS512.getJcaName());
 		
+		String expirationTime = environment.getProperty("tw.niq.example.token.expiration_time");
+		
+		logger.info("expirationTime: " + expirationTime);
+		
 		String token = Jwts.builder()
 			.setSubject(userDto.getUserId())
 			.setExpiration(Date.from(now
-					.plusMillis(Long.parseLong(environment.getProperty("tw.niq.example.token.expiration_time")))))
+					.plusMillis(Long.parseLong(expirationTime))))
 			.setIssuedAt(Date.from(now))
 			.signWith(secretKey, SignatureAlgorithm.HS512)
 			.compact();

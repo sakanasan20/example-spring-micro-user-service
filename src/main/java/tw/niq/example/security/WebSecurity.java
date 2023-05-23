@@ -1,5 +1,7 @@
 package tw.niq.example.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -20,6 +22,8 @@ import tw.niq.example.service.UserService;
 @EnableWebSecurity
 public class WebSecurity {
 	
+	private final Logger logger = LoggerFactory.getLogger(WebSecurity.class);
+	
 	private final Environment environment;
 	
 	private final UserService userService;
@@ -30,6 +34,10 @@ public class WebSecurity {
 		this.environment = environment;
 		this.userService = userService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		
+		String currentConfig = environment.getProperty("tw.niq.example.config.active");
+		
+		logger.info("currentConfig: " + currentConfig);
 	}
 
 	@Bean
