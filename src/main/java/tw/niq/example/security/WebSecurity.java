@@ -64,6 +64,7 @@ public class WebSecurity {
 			.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
 			.requestMatchers(HttpMethod.GET, "/api/v1/users/status").permitAll()
 			.requestMatchers(HttpMethod.POST, environment.getProperty("tw.niq.example.login.url")).permitAll()
+			.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			.and()
 			.addFilter(authenticationFilter)
 			.authenticationManager(authenticationManager)
