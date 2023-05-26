@@ -12,5 +12,7 @@ public class UserModel {
 	private String lastName;
 	
 	private String email;
+	
+	private AccountModel account;
 
 }

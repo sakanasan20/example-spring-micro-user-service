@@ -5,14 +5,19 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import tw.niq.example.dto.UserDto;
 import tw.niq.example.entity.UserEntity;
+import tw.niq.example.model.AccountModel;
 import tw.niq.example.repository.UserRepository;
 
 @Service
@@ -21,10 +26,14 @@ public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	private final RestTemplate restTemplate;
 
-	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
+			RestTemplate restTemplate) {
 		this.userRepository = userRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+		this.restTemplate = restTemplate;
 	}
 
 	@Override
@@ -89,6 +98,14 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new UsernameNotFoundException(userId));
 		
 		UserDto userDtoFound = modelMapper.map(userEntityFound, UserDto.class);
+		
+		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
+		
+		ResponseEntity<AccountModel> accountResponse = restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
+		
+		AccountModel account = accountResponse.getBody();
+		
+		userDtoFound.setAccount(account);
 		
 		return userDtoFound;
 	}

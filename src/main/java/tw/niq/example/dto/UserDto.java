@@ -3,6 +3,7 @@ package tw.niq.example.dto;
 import java.io.Serializable;
 
 import lombok.Data;
+import tw.niq.example.model.AccountModel;
 
 @Data
 public class UserDto implements Serializable {
@@ -20,5 +21,7 @@ public class UserDto implements Serializable {
 	private String password;
 	
 	private String encryptedPassword;
+	
+	private AccountModel account;
 	
 }
