@@ -2,13 +2,12 @@ package tw.niq.example.controller;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +62,23 @@ public class UserController {
 		UserModel userModel = modelMapper.map(userDtoCreated, UserModel.class);
 		
 		return new ResponseEntity<UserModel>(userModel, HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/{userId}", 
+			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<UserModel> getUser(@PathVariable("userId") String userId) {
+		
+		log.debug(userId);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
+		UserDto userDtoFound = userService.getUserByUserId(userId);
+		
+		UserModel userModel = modelMapper.map(userDtoFound, UserModel.class);
+		
+		return new ResponseEntity<UserModel>(userModel, HttpStatus.OK);
 	}
 	
 }

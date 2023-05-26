@@ -59,10 +59,9 @@ public class WebSecurity {
 		http.csrf().disable();
 		
 		http.authorizeHttpRequests()
-			.requestMatchers(HttpMethod.POST, "/api/v1/users")
+			.requestMatchers("/api/v1/users/**")
 				.access(new WebExpressionAuthorizationManager("hasIpAddress('" + environment.getProperty("tw.niq.example.gateway.ip") + "')"))
 			.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-			.requestMatchers(HttpMethod.GET, "/api/v1/users/status").permitAll()
 			.requestMatchers(HttpMethod.POST, environment.getProperty("tw.niq.example.login.url")).permitAll()
 			.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			.and()
