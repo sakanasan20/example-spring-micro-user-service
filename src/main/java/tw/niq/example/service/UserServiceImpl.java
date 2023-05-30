@@ -15,11 +15,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import tw.niq.example.client.AccountServiceClient;
 import tw.niq.example.dto.UserDto;
 import tw.niq.example.entity.UserEntity;
 import tw.niq.example.model.AccountModel;
 import tw.niq.example.repository.UserRepository;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 	
@@ -28,12 +32,15 @@ public class UserServiceImpl implements UserService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	private final RestTemplate restTemplate;
+	
+	private final AccountServiceClient accountServiceClient;
 
 	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
-			RestTemplate restTemplate) {
+			RestTemplate restTemplate, AccountServiceClient accountServiceClient) {
 		this.userRepository = userRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		this.restTemplate = restTemplate;
+		this.accountServiceClient = accountServiceClient;
 	}
 
 	@Override
@@ -99,14 +106,22 @@ public class UserServiceImpl implements UserService {
 		
 		UserDto userDtoFound = modelMapper.map(userEntityFound, UserDto.class);
 		
+		// RestTemplate
 		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
 		
 		ResponseEntity<AccountModel> accountResponse = restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
 		
-		AccountModel account = accountResponse.getBody();
+		AccountModel accountRestTemplate = accountResponse.getBody();
 		
-		userDtoFound.setAccount(account);
+		log.info("accountRestTemplate: " + accountRestTemplate.toString());
 		
+		// FeignClient
+		AccountModel accountFeignClient = accountServiceClient.getAccount(userId);
+		
+		log.info("accountFeignClient: " + accountFeignClient.toString());
+
+		userDtoFound.setAccount(accountFeignClient);
+
 		return userDtoFound;
 	}
 
