@@ -155,6 +155,30 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-observation -->
+		<dependency>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-observation</artifactId>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-tracing-bridge-brave -->
+		<dependency>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.zipkin.reporter2/zipkin-reporter-brave -->
+		<dependency>
+		    <groupId>io.zipkin.reporter2</groupId>
+		    <artifactId>zipkin-reporter-brave</artifactId>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-micrometer -->
+		<dependency>
+		    <groupId>io.github.openfeign</groupId>
+		    <artifactId>feign-micrometer</artifactId>
+		</dependency>
 	</dependencies>
 	
 	<dependencyManagement>

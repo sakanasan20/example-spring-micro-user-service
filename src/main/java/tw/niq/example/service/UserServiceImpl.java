@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import tw.niq.example.client.AccountServiceClient;
 import tw.niq.example.dto.UserDto;
@@ -107,18 +106,23 @@ public class UserServiceImpl implements UserService {
 		UserDto userDtoFound = modelMapper.map(userEntityFound, UserDto.class);
 		
 		// RestTemplate
-//		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
-//		
-//		ResponseEntity<AccountModel> accountResponse = restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
-//		
-//		AccountModel accountRestTemplate = accountResponse.getBody();
-//		
-//		log.info("accountRestTemplate: " + accountRestTemplate.toString());
+		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
+		
+		ResponseEntity<AccountModel> accountResponse = 
+				restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
+		
+		AccountModel accountRestTemplate = accountResponse.getBody();
+		
+		log.debug("accountRestTemplate: " + accountRestTemplate.toString());
 		
 		// FeignClient
+		log.debug("Before calling account service");
+		
 		AccountModel accountFeignClient = accountServiceClient.getAccount(userId);
 		
-		log.info("accountFeignClient: " + accountFeignClient.toString());
+		log.debug("After calling account service");
+		
+		log.debug(accountFeignClient.toString());
 
 		userDtoFound.setAccount(accountFeignClient);
 

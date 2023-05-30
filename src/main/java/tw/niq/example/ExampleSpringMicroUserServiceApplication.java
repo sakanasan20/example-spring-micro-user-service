@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.web.exchanges.HttpExchangeRepository;
 import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -35,8 +36,8 @@ public class ExampleSpringMicroUserServiceApplication {
 	
 	@Bean
 	@LoadBalanced
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder.build();
 	}
 	
 	@Bean
