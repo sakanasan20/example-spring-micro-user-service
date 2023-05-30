@@ -107,13 +107,13 @@ public class UserServiceImpl implements UserService {
 		UserDto userDtoFound = modelMapper.map(userEntityFound, UserDto.class);
 		
 		// RestTemplate
-		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
-		
-		ResponseEntity<AccountModel> accountResponse = restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
-		
-		AccountModel accountRestTemplate = accountResponse.getBody();
-		
-		log.info("accountRestTemplate: " + accountRestTemplate.toString());
+//		String accountServiceUrl = String.format("http://accountservice/api/v1/accounts/%s", userId);
+//		
+//		ResponseEntity<AccountModel> accountResponse = restTemplate.exchange(accountServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<AccountModel>(){});
+//		
+//		AccountModel accountRestTemplate = accountResponse.getBody();
+//		
+//		log.info("accountRestTemplate: " + accountRestTemplate.toString());
 		
 		// FeignClient
 		AccountModel accountFeignClient = accountServiceClient.getAccount(userId);
