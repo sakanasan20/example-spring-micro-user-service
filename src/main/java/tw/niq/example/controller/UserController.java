@@ -38,10 +38,8 @@ public class UserController {
 	public String status() {
 		
 		String port = environment.getProperty("local.server.port");
-		String currentGlobalConfig = environment.getProperty("tw.niq.example.config.global.active");
-		String currentConfig = environment.getProperty("tw.niq.example.config.active");
 		
-		return "Working on port " + port + ", currentGlobalConfig: " + currentGlobalConfig + ", currentConfig: " + currentConfig;
+		return "Working on port " + port;
 	}
 	
 	@PostMapping(

@@ -35,9 +35,11 @@ public class WebSecurity {
 		this.userService = userService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		
-		String currentConfig = environment.getProperty("tw.niq.example.config.active");
+		String remoteConfig = environment.getProperty("tw.niq.example.config.remote.active");
+		String localConfig = environment.getProperty("tw.niq.example.config.local.active");
 		
-		logger.info("currentConfig: " + currentConfig);
+		logger.info("## Remote Config: " + remoteConfig);
+		logger.info("## Local Config: " + localConfig);
 	}
 
 	@Bean
