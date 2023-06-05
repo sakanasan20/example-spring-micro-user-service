@@ -8,6 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import tw.niq.example.service.UserService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurity {
 	
 	private final Logger logger = LoggerFactory.getLogger(WebSecurity.class);
@@ -58,6 +60,8 @@ public class WebSecurity {
 		
 		authenticationFilter.setFilterProcessesUrl(environment.getProperty("tw.niq.example.login.url"));
 		
+		AuthorizationFilter authorizationFilter = new AuthorizationFilter(authenticationManager, environment);
+		
 		http.csrf().disable();
 		
 		http.authorizeHttpRequests()
@@ -68,6 +72,7 @@ public class WebSecurity {
 			.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			.and()
 			.addFilter(authenticationFilter)
+			.addFilter(authorizationFilter)
 			.authenticationManager(authenticationManager)
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		
